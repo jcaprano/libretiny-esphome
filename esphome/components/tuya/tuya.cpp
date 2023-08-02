@@ -269,7 +269,7 @@ void Tuya::handle_command_(uint8_t command, uint8_t version, const uint8_t *buff
       break;
     }
     case TuyaCommandType::ENABLE_WEATHER: {
-      ESP_LOGV(TAG, "Enable weather received for parameters:", command);
+      ESP_LOGE(TAG, "Enable weather received for parameters:", command);
       size_t index = 0;
       while (index < len) {
         // Read the length (L)
@@ -283,7 +283,7 @@ void Tuya::handle_command_(uint8_t command, uint8_t version, const uint8_t *buff
         }
 
         // Read the request parameter name (K)
-        ESP_LOGV(TAG, "%.*s", length, buffer[index]);
+        ESP_LOGE(TAG, "%.*s", length, buffer[index]);
 
         // Move to the next block
         index += length;
