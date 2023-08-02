@@ -283,11 +283,17 @@ void Tuya::handle_command_(uint8_t command, uint8_t version, const uint8_t *buff
         }
 
         // Read the request parameter name (K)
-        ESP_LOGE(TAG, "%.*s", buffer[index], length);
+        ESP_LOGE(TAG, "%.*s", length, &buffer[index]);
 
         // Move to the next block
         index += length;
       }
+      //Acknowledge enable
+      this->send_command_(
+          TuyaCommand{.cmd = TuyaCommandType::ENABLE_WEATHER, .payload = std::vector<uint8_t>{1,0}});
+      //Send weather
+      //this->send_command_(
+      //    TuyaCommand{.cmd = TuyaCommandType::SEND_WEATHER, .payload = std::vector<uint8_t>{get_wifi_rssi_()}});
       break;
     }
     case TuyaCommandType::REQUEST_WEATHER: 
