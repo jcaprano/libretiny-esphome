@@ -271,7 +271,7 @@ void Tuya::handle_command_(uint8_t command, uint8_t version, const uint8_t *buff
     case TuyaCommandType::ENABLE_WEATHER: 
       ESP_LOGE(TAG, "Enable weather received, printing buffer", command);
         for (size_t i = 0; i < len; ++i) {
-          ESP_LOGE(TAG, "%d:%02X %c ", i, buffer[i], buffer[i]);
+          ESP_LOGE(TAG, "%d:%02X %c ", i, buffer[i], (buffer[i] >= 0x20 && buffer[i] <= 0x7E) ? buffer[i] : ' ');
         }
       break;
     case TuyaCommandType::REQUEST_WEATHER: 
