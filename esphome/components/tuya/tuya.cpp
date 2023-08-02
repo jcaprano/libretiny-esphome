@@ -269,10 +269,25 @@ void Tuya::handle_command_(uint8_t command, uint8_t version, const uint8_t *buff
       break;
     }
     case TuyaCommandType::ENABLE_WEATHER: 
-      ESP_LOGE(TAG, "Enable weather received, printing buffer", command);
-        for (size_t i = 0; i < len; ++i) {
-          ESP_LOGE(TAG, "%d:%02X %c ", i, buffer[i], (buffer[i] >= 0x20 && buffer[i] <= 0x7E) ? buffer[i] : ' ');
+      ESP_LOGV(TAG, "Enable weather received for parameters:", command);
+        size_t index = 0;
+        while (index < len) {
+        // Read the length (L)
+        unsigned char length = buffer[index];
+        index++;
+
+        // Ensure we don't read beyond buffer boundaries
+        if (index + length > len) {
+            ESP_LOGE(TAG, "Malformed buffer: Unexpected end.");
+            return;
         }
+
+        // Read the request parameter name (K)
+        ESP_LOGV(TAG, "%.*s", length, buffer[index]);
+
+        // Move to the next block
+        index += length;
+    }
       break;
     case TuyaCommandType::REQUEST_WEATHER: 
       ESP_LOGE(TAG, "Request weather received, printing buffer", command);
