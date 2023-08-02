@@ -269,7 +269,7 @@ void Tuya::handle_command_(uint8_t command, uint8_t version, const uint8_t *buff
       break;
     }
     default:
-      ESP_LOGE(TAG, "Invalid command (0x%02X) received", command);
+      ESP_LOGE(TAG, "Invalid command (0x%02X) received but Jojo is here", command);
   }
 }
 
