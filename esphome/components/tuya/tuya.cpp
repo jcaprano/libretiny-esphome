@@ -269,7 +269,7 @@ void Tuya::handle_command_(uint8_t command, uint8_t version, const uint8_t *buff
       break;
     }
     case TuyaCommandType::ENABLE_WEATHER: {
-      ESP_LOGE(TAG, "Enable weather received for parameters:", command);
+      ESP_LOGW(TAG, "Enable weather received for parameters:", command);
       size_t index = 0;
       while (index < len) {
         // Read the length (L)
@@ -283,7 +283,7 @@ void Tuya::handle_command_(uint8_t command, uint8_t version, const uint8_t *buff
         }
 
         // Read the request parameter name (K)
-        ESP_LOGE(TAG, "%.*s", length, &buffer[index]);
+        ESP_LOGW(TAG, "%.*s", length, &buffer[index]);
 
         // Move to the next block
         index += length;
@@ -293,11 +293,14 @@ void Tuya::handle_command_(uint8_t command, uint8_t version, const uint8_t *buff
           TuyaCommand{.cmd = TuyaCommandType::ENABLE_WEATHER, .payload = std::vector<uint8_t>{1,0}});
       break;
     }
+    case TuyaCommandType::SEND_WEATHER:
+      ESP_LOGW(TAG, "Weather received by MCU, length %d", len);
+      break;
     case TuyaCommandType::REQUEST_WEATHER: 
-      ESP_LOGE(TAG, "Request weather received, sending fake weather", command);
+      ESP_LOGW(TAG, "Request weather received, sending fake weather", command);
       //Send weather
       this->send_command_(
-          TuyaCommand{.cmd = TuyaCommandType::SEND_WEATHER, .payload = std::vector<uint8_t>{0x01, 0x0A, 0x77, 0x2E, 0x68, 0x75, 0x6D , 0x69, 0x64, 0x69, 0x74, 0x79, 0x00, 0x04, 0x00, 0x00, 0x00, 0x42, 0x0E, 0x77,0x2E,0x63,0x6F,0x6E,0x64,0x69,0x74,0x69,0x6F,0x6E,0x4E,0x75,0x6D,0x00, 0x04, 0x00, 0x00, 0x00, 0x66}});
+          TuyaCommand{.cmd = TuyaCommandType::SEND_WEATHER, .payload = std::vector<uint8_t>{0x01, 0x0A, 0x77, 0x2E, 0x68, 0x75, 0x6D , 0x69, 0x64, 0x69, 0x74, 0x79, 0x00, 0x04, 0x00, 0x00, 0x00, 0x30, 0x0E, 0x77,0x2E,0x63,0x6F,0x6E,0x64,0x69,0x74,0x69,0x6F,0x6E,0x4E,0x75,0x6D,0x00, 0x04, 0x00, 0x00, 0x00, 0x7C}});
       
       break;
     default:
