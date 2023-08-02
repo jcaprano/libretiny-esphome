@@ -283,7 +283,7 @@ void Tuya::handle_command_(uint8_t command, uint8_t version, const uint8_t *buff
         }
 
         // Read the request parameter name (K)
-        ESP_LOGE(TAG, "%.*s", length, buffer[index]);
+        ESP_LOGE(TAG, "%.*s", buffer[index], length);
 
         // Move to the next block
         index += length;
