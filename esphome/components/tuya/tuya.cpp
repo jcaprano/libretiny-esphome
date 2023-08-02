@@ -292,8 +292,8 @@ void Tuya::handle_command_(uint8_t command, uint8_t version, const uint8_t *buff
       this->send_command_(
           TuyaCommand{.cmd = TuyaCommandType::ENABLE_WEATHER, .payload = std::vector<uint8_t>{1,0}});
       //Send weather
-      //this->send_command_(
-      //    TuyaCommand{.cmd = TuyaCommandType::SEND_WEATHER, .payload = std::vector<uint8_t>{get_wifi_rssi_()}});
+      this->send_command_(
+          TuyaCommand{.cmd = TuyaCommandType::SEND_WEATHER, .payload = std::vector<uint8_t>{0x01, 0x0A, 0x77, 0x2E, 0x68, 0x75, 0x6D , 0x69, 0x64, 0x69, 0x74, 0x79, 0x00, 0x04, 0x00, 0x00, 0x00, 0x42, 0x0E, 0x77,0x2E,0x63,0x6F,0x6E,0x64,0x69,0x74,0x69,0x6F,0x6E,0x4E,0x75,0x6D,0x00, 0x04, 0x00, 0x00, 0x00, 0x65}});
       break;
     }
     case TuyaCommandType::REQUEST_WEATHER: 
