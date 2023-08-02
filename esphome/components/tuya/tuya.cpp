@@ -268,8 +268,20 @@ void Tuya::handle_command_(uint8_t command, uint8_t version, const uint8_t *buff
       ESP_LOGV(TAG, "Network status requested, reported as %i", wifi_status);
       break;
     }
+    case TuyaCommandType::ENABLE_WEATHER: 
+      ESP_LOGE(TAG, "Enable weather received, printing buffer", command);
+        for (size_t i = 0; i < len; ++i) {
+          ESP_LOGE(TAG, "%d:%02X ", i, buffer[i]);
+        }
+      break;
+    case TuyaCommandType::REQUEST_WEATHER: 
+      ESP_LOGE(TAG, "Request weather received, printing buffer", command);
+        for (size_t i = 0; i < len; ++i) {
+          ESP_LOGE(TAG, "%d:%02X ", i, buffer[i]);
+        }
+      break;
     default:
-      ESP_LOGE(TAG, "Invalid command (0x%02X) received but Jojo is here", command);
+      ESP_LOGE(TAG, "Invalid command (0x%02X) received", command);
   }
 }
 
