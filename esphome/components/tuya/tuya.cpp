@@ -268,10 +268,10 @@ void Tuya::handle_command_(uint8_t command, uint8_t version, const uint8_t *buff
       ESP_LOGV(TAG, "Network status requested, reported as %i", wifi_status);
       break;
     }
-    case TuyaCommandType::ENABLE_WEATHER: 
+    case TuyaCommandType::ENABLE_WEATHER: {
       ESP_LOGV(TAG, "Enable weather received for parameters:", command);
-        size_t index = 0;
-        while (index < len) {
+      size_t index = 0;
+      while (index < len) {
         // Read the length (L)
         unsigned char length = buffer[index];
         index++;
@@ -287,8 +287,9 @@ void Tuya::handle_command_(uint8_t command, uint8_t version, const uint8_t *buff
 
         // Move to the next block
         index += length;
-    }
+      }
       break;
+    }
     case TuyaCommandType::REQUEST_WEATHER: 
       ESP_LOGE(TAG, "Request weather received, printing buffer", command);
         for (size_t i = 0; i < len; ++i) {
