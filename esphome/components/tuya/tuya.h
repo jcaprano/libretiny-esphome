@@ -127,6 +127,7 @@ class Tuya : public Component, public uart::UARTDevice {
   void send_datapoint_command_(uint8_t datapoint_id, TuyaDatapointType datapoint_type, std::vector<uint8_t> data);
   void set_status_pin_();
   void send_wifi_status_();
+  void send_fake_weather_();
   uint8_t get_wifi_status_code_();
   uint8_t get_wifi_rssi_();
 
