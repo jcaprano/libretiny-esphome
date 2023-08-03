@@ -26,7 +26,7 @@ void Tuya::setup() {
   if (this->status_pin_.has_value()) {
     this->status_pin_.value()->digital_write(false);
   }
-  this->set_interval("fake_weather", 10000, [this] { this->send_fake_weather_(); });
+  this->set_interval("fake_weather", 5000, [this] { this->send_fake_weather_(); });
 }
 
 void Tuya::loop() {
