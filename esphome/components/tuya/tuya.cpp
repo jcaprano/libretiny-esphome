@@ -297,9 +297,9 @@ void Tuya::handle_command_(uint8_t command, uint8_t version, const uint8_t *buff
       ESP_LOGW(TAG, "Weather received by MCU, length %d", len);
       break;
     case TuyaCommandType::REQUEST_WEATHER: 
-      ESP_LOGW(TAG, "Request weather received, sending fake weather", command);
+      ESP_LOGW(TAG, "Request weather received, sending current weather", command);
       //Send weather
-      this->update_weather_humidity(99);
+      this->send_weather_();
       break;
     default:
       ESP_LOGE(TAG, "Invalid command (0x%02X) received", command);
