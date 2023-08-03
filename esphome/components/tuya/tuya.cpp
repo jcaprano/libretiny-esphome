@@ -540,10 +540,18 @@ void Tuya::send_wifi_status_() {
 
 void Tuya::send_fake_weather_(){
   uint8_t humidity = random_float()*100;
-  uint8_t weather = 101+random_float()*45;
-  ESP_LOGW(TAG, "Sending new Fake weather, humidity:%d, weather:%d", humidity, weather);
+  uint8_t first_weather_digit = (this->current_weather_condition/100) + 48;
+  uint8_t second_weather_digit = ((this->current_weather_condition / 10) % 10) + 48;
+  uint8_t third_weather_digit = (this->current_weather_condition % 10) + 48;
+  ESP_LOGW(TAG, "Sending new Fake weather, humidity:%d, weather:%c%c%c", humidity, first_weather_digit, second_weather_digit, third_weather_digit);
+  
   this->send_command_(
           TuyaCommand{.cmd = TuyaCommandType::SEND_WEATHER, .payload = std::vector<uint8_t>{0x01, 0x0A, 0x77, 0x2E, 0x68, 0x75, 0x6D , 0x69, 0x64, 0x69, 0x74, 0x79, 0x00, 0x04, 0x00, 0x00, 0x00, humidity, 0x0E, 0x77,0x2E,0x63,0x6F,0x6E,0x64,0x69,0x74,0x69,0x6F,0x6E,0x4E,0x75,0x6D,0x01, 0x03, 0x31, 0x30, 0x35}});
+  if (this->current_weather_condition<145){
+    this->current_weather_condition++;
+    }else{
+    this->current_weather_condition = 101;
+    }
 }
 
 #ifdef USE_TIME
