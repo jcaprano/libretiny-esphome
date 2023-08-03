@@ -538,20 +538,23 @@ void Tuya::send_wifi_status_() {
 }
 
 void Tuya::update_weather_humidity(uint32_t value){
-  uint8_t humidity = value;
-  uint8_t first_weather_digit = (this->current_weather_condition/100) + 48;
-  uint8_t second_weather_digit = ((this->current_weather_condition / 10) % 10) + 48;
-  uint8_t third_weather_digit = (this->current_weather_condition % 10) + 48;
-  ESP_LOGW(TAG, "Sending new Fake weather, humidity:%d, weather:%c%c%c", humidity, first_weather_digit, second_weather_digit, third_weather_digit);
-  
-  this->send_command_(
-          TuyaCommand{.cmd = TuyaCommandType::SEND_WEATHER, .payload = std::vector<uint8_t>{0x01, 0x0A, 0x77, 0x2E, 0x68, 0x75, 0x6D , 0x69, 0x64, 0x69, 0x74, 0x79, 0x00, 0x04, 0x00, 0x00, 0x00, humidity, 0x0E, 0x77,0x2E,0x63,0x6F,0x6E,0x64,0x69,0x74,0x69,0x6F,0x6E,0x4E,0x75,0x6D,0x01, 0x03, first_weather_digit, second_weather_digit, third_weather_digit}});
-  if (this->current_weather_condition<146){
-    this->current_weather_condition++;
-    }else{
-    this->current_weather_condition = 101;
-    }
+  this->weather_humidity_ = value;
+  ESP_LOGW(TAG, "Updated Humidity to %d", this->weather_humidity_);
 }
+
+void Tuya::update_weather_condition(std::string value){
+  ESP_LOGW(TAG, "Updated weather condition to %s", value);
+}
+
+void Tuya::send_weather_(){
+  uint8_t first_weather_digit = (this->weather_condition_/100) + 48;
+  uint8_t second_weather_digit = ((this->weather_condition_ / 10) % 10) + 48;
+  uint8_t third_weather_digit = (this->weather_condition_ % 10) + 48;
+  ESP_LOGW(TAG, "Sending current weather to MCU, humidity:%d, condition:%c%c%c", this->weather_humidity_, first_weather_digit, second_weather_digit, third_weather_digit);
+  this->send_command_(
+          TuyaCommand{.cmd = TuyaCommandType::SEND_WEATHER, .payload = std::vector<uint8_t>{0x01, 0x0A, 0x77, 0x2E, 0x68, 0x75, 0x6D , 0x69, 0x64, 0x69, 0x74, 0x79, 0x00, 0x04, 0x00, 0x00, 0x00, this->weather_humidity_, 0x0E, 0x77,0x2E,0x63,0x6F,0x6E,0x64,0x69,0x74,0x69,0x6F,0x6E,0x4E,0x75,0x6D,0x01, 0x03, first_weather_digit, second_weather_digit, third_weather_digit}});
+}
+
 
 #ifdef USE_TIME
 void Tuya::send_local_time_() {
