@@ -26,7 +26,6 @@ void Tuya::setup() {
   if (this->status_pin_.has_value()) {
     this->status_pin_.value()->digital_write(false);
   }
-  //this->set_interval("fake_weather", 5000, [this] { this->send_fake_weather_(); });
 }
 
 void Tuya::loop() {
@@ -300,7 +299,7 @@ void Tuya::handle_command_(uint8_t command, uint8_t version, const uint8_t *buff
     case TuyaCommandType::REQUEST_WEATHER: 
       ESP_LOGW(TAG, "Request weather received, sending fake weather", command);
       //Send weather
-      this->send_fake_weather_();
+      this->update_weather_humidity(99);
       break;
     default:
       ESP_LOGE(TAG, "Invalid command (0x%02X) received", command);
@@ -538,8 +537,8 @@ void Tuya::send_wifi_status_() {
   this->send_command_(TuyaCommand{.cmd = TuyaCommandType::WIFI_STATE, .payload = std::vector<uint8_t>{status}});
 }
 
-void Tuya::send_fake_weather_(){
-  uint8_t humidity = this->current_weather_condition-100;
+void Tuya::update_weather_humidity(uint32_t value){
+  uint8_t humidity = value;
   uint8_t first_weather_digit = (this->current_weather_condition/100) + 48;
   uint8_t second_weather_digit = ((this->current_weather_condition / 10) % 10) + 48;
   uint8_t third_weather_digit = (this->current_weather_condition % 10) + 48;
