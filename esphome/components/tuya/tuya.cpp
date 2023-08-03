@@ -540,10 +540,12 @@ void Tuya::send_wifi_status_() {
 void Tuya::update_weather_humidity(uint32_t value){
   this->weather_humidity_ = value;
   ESP_LOGW(TAG, "Updated Humidity to %d", this->weather_humidity_);
+  this->send_weather_();
 }
 
 void Tuya::update_weather_condition(std::string value){
   ESP_LOGW(TAG, "Updated weather condition to %s", value);
+  this->send_weather_();
 }
 
 void Tuya::send_weather_(){
