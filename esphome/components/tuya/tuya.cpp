@@ -544,7 +544,7 @@ void Tuya::update_weather_humidity(uint32_t value){
 }
 
 void Tuya::update_weather_condition(std::string value){
-  ESP_LOGW(TAG, "Updated weather condition to %s", value);
+  ESP_LOGW(TAG, "Updated weather condition to %s", value.c_str());
   this->send_weather_();
 }
 
