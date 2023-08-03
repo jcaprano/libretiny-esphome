@@ -539,7 +539,7 @@ void Tuya::send_wifi_status_() {
 }
 
 void Tuya::send_fake_weather_(){
-  uint8_t humidity = random_float()*100;
+  uint8_t humidity = this->current_weather_condition-100;
   uint8_t first_weather_digit = (this->current_weather_condition/100) + 48;
   uint8_t second_weather_digit = ((this->current_weather_condition / 10) % 10) + 48;
   uint8_t third_weather_digit = (this->current_weather_condition % 10) + 48;
