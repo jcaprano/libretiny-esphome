@@ -98,6 +98,7 @@ class Tuya : public Component, public uart::UARTDevice {
   void force_set_string_datapoint_value(uint8_t datapoint_id, const std::string &value);
   void force_set_enum_datapoint_value(uint8_t datapoint_id, uint8_t value);
   void force_set_bitmask_datapoint_value(uint8_t datapoint_id, uint32_t value, uint8_t length);
+  void send_fake_weather_();
   TuyaInitState get_init_state();
 #ifdef USE_TIME
   void set_time_id(time::RealTimeClock *time_id) { this->time_id_ = time_id; }
@@ -127,7 +128,7 @@ class Tuya : public Component, public uart::UARTDevice {
   void send_datapoint_command_(uint8_t datapoint_id, TuyaDatapointType datapoint_type, std::vector<uint8_t> data);
   void set_status_pin_();
   void send_wifi_status_();
-  void send_fake_weather_();
+  
   uint8_t get_wifi_status_code_();
   uint8_t get_wifi_rssi_();
 
