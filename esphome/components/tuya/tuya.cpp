@@ -544,7 +544,20 @@ void Tuya::update_weather_humidity(uint32_t value){
 }
 
 void Tuya::update_weather_condition(std::string value){
-  ESP_LOGW(TAG, "Updated weather condition to %s", value.c_str());
+  if (value == "sunny" || value == "clear-night") {
+    this->weather_condition_=120; //sunny symbol
+  } else if (value == "partlycloudy" || value == "windy" || value == "windy-variant") {
+    this->weather_condition_=119; //partially cloudy symbol
+  } else if (value == "cloudy" || value == "fog" || value == "exceptional") {
+    this->weather_condition_=103; //cloudy symbol
+  } else if (value == "rainy" || value == "pouring" || value == "lightning" || value == "lightning-rainy" || value == "hail") {
+    this->weather_condition_=101; //rainy symbol
+  } else if (value == "snowy" || value == "snowy-rainy") {
+    this->weather_condition_=104; //snowy symbol
+  } else {
+    this->weather_condition_=120; //sunny symbol
+  }
+  ESP_LOGW(TAG, "Updated weather condition to code %d based on received condition %s", this->weather_condition_, value.c_str());
   this->send_weather_();
 }
 

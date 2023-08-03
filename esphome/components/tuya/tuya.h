@@ -156,7 +156,7 @@ class Tuya : public Component, public uart::UARTDevice {
   optional<TuyaCommandType> expected_response_{};
   uint8_t wifi_status_ = -1;
   uint8_t weather_humidity_ = 99;
-  uint8_t weather_condition_ = 101;
+  uint8_t weather_condition_ = 120;
   CallbackManager<void()> initialized_callback_{};
 };
 
