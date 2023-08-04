@@ -9,7 +9,7 @@ static const char *const TAG = "tuya.climate";
 void TuyaClimate::setup() {
   if (this->switch_id_.has_value()) {
     this->parent_->register_listener(*this->switch_id_, [this](const TuyaDatapoint &datapoint) {
-      ESP_LOGV(TAG, "MCU reported mode (switch) is: %d", datapoint.value_int);
+      ESP_LOGW(TAG, "MCU reported mode (switch) is: %d", datapoint.value_int);
       /*
       this->mode = climate::CLIMATE_MODE_OFF;
       if (datapoint.value_bool) {
