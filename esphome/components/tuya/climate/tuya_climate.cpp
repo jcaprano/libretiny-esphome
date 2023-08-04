@@ -105,9 +105,17 @@ void TuyaClimate::loop() {
 
 void TuyaClimate::control(const climate::ClimateCall &call) {
   if (call.get_mode().has_value()) {
-    const bool switch_state = *call.get_mode() != climate::CLIMATE_MODE_OFF;
-    ESP_LOGV(TAG, "Setting switch: %s", ONOFF(switch_state));
-    this->parent_->set_boolean_datapoint_value(*this->switch_id_, switch_state);
+    ESP_LOGW(TAG, "Received mode: %d, sending to MCU", *call.get_mode());
+    climate::ClimateMode received_mode = *call.get_mode();
+    if(received_mode==climate::CLIMATE_MODE_OFF){
+      this->parent_->set_boolean_datapoint_value(*this->switch_id_, 0);
+    }else if(received_mode==climate::CLIMATE_MODE_COOL){
+      this->parent_->set_integer_datapoint_value(*this->active_state_id_, 0);
+    }else if(received_mode==climate::CLIMATE_MODE_HEAT){
+      this->parent_->set_integer_datapoint_value(*this->active_state_id_, 1);
+    }else if(received_mode==climate::CLIMATE_MODE_FAN_ONLY){
+      this->parent_->set_integer_datapoint_value(*this->active_state_id_, 2);
+    }
   }
 
   if (call.get_target_temperature().has_value()) {
