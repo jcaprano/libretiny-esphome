@@ -3,6 +3,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/tuya/tuya.h"
 #include "esphome/components/climate/climate.h"
+#include <set>
 
 namespace esphome {
 namespace tuya {

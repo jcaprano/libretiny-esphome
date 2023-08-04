@@ -136,14 +136,31 @@ climate::ClimateTraits TuyaClimate::traits() {
   auto traits = climate::ClimateTraits();
   traits.set_supports_action(true);
   traits.set_supports_current_temperature(this->current_temperature_id_.has_value());
+
+  std::set<climate::ClimateMode> modes = {climate::CLIMATE_MODE_OFF};
   if (supports_heat_)
-    traits.add_supported_mode(climate::CLIMATE_MODE_HEAT);
+    modes.insert(climate::CLIMATE_MODE_HEAT);
   if (supports_cool_)
-    traits.add_supported_mode(climate::CLIMATE_MODE_COOL);
+    modes.insert(climate::CLIMATE_MODE_COOL);
+  if(true)
+    modes.insert(climate::CLIMATE_MODE_FAN_ONLY);
+  traits.set_supported_modes(modes);
+
+  std::set<climate::ClimateFanMode> fan_modes = {};
+  if(true)
+    fan_modes.insert(climate::CLIMATE_FAN_LOW);
+    fan_modes.insert(climate::CLIMATE_FAN_MEDIUM);
+    fan_modes.insert(climate::CLIMATE_FAN_HIGH);
+    fan_modes.insert(climate::CLIMATE_FAN_AUTO);
+  traits.set_supported_fan_modes(fan_modes);
+
+  std::set<climate::ClimatePreset> presets = {};
   if (this->eco_id_.has_value()) {
-    traits.add_supported_preset(climate::CLIMATE_PRESET_NONE);
-    traits.add_supported_preset(climate::CLIMATE_PRESET_ECO);
+    presets.insert(climate::CLIMATE_PRESET_NONE);
+    presets.insert(climate::CLIMATE_PRESET_ECO);
   }
+  traits.set_supported_presets(presets);
+
   return traits;
 }
 
