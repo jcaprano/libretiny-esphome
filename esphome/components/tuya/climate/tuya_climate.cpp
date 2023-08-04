@@ -9,27 +9,23 @@ static const char *const TAG = "tuya.climate";
 void TuyaClimate::setup() {
   if (this->switch_id_.has_value()) {
     this->parent_->register_listener(*this->switch_id_, [this](const TuyaDatapoint &datapoint) {
-      ESP_LOGW(TAG, "MCU reported mode (switch) is: %d", datapoint.value_int);
-      /*
-      this->mode = climate::CLIMATE_MODE_OFF;
-      if (datapoint.value_bool) {
-        if (this->supports_heat_ && this->supports_cool_) {
-          this->mode = climate::CLIMATE_MODE_HEAT_COOL;
-        } else if (this->supports_heat_) {
-          this->mode = climate::CLIMATE_MODE_HEAT;
-        } else if (this->supports_cool_) {
-          this->mode = climate::CLIMATE_MODE_COOL;
-        }
-      }
-      */
+      ESP_LOGW(TAG, "MCU reported switch is: %s", ONOFF(datapoint.value_bool));
+      if (!datapoint.value_bool)
+        this->mode = climate::CLIMATE_MODE_OFF;
       this->compute_state_();
       this->publish_state();
     });
   }
   if (this->active_state_id_.has_value()) {
     this->parent_->register_listener(*this->active_state_id_, [this](const TuyaDatapoint &datapoint) {
-      ESP_LOGV(TAG, "MCU reported active state is: %u", datapoint.value_enum);
-      this->active_state_ = datapoint.value_enum;
+      ESP_LOGW(TAG, "MCU reported active mode is: %u", datapoint.value_enum);
+      if(datapoint.value_enum == 0){
+        this->mode = climate::CLIMATE_MODE_COOL;
+      }else if(datapoint.value_enum == 1){
+        this->mode = climate::CLIMATE_MODE_HEAT;
+      }else if(datapoint.value_enum == 2){
+        this->mode = climate::CLIMATE_MODE_FAN_ONLY;
+      }
       this->compute_state_();
       this->publish_state();
     });
