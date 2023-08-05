@@ -226,14 +226,21 @@ void TuyaClimate::compute_state_() {
 
   climate::ClimateAction target_action = climate::CLIMATE_ACTION_IDLE;
   if (this->active_state_id_.has_value()) {
+    if(this->mode == climate::CLIMATE_MODE_COOL){
+      target_action = climate::CLIMATE_ACTION_COOLING;
+    }else if (this->mode == climate::CLIMATE_MODE_HEAT){
+      target_action = climate::CLIMATE_ACTION_HEATING;
+    }else if (this->mode == climate::CLIMATE_MODE_FAN_ONLY){
+      target_action = climate::CLIMATE_ACTION_FAN;
+    }
     // Use state from MCU datapoint
-    if (this->supports_heat_ && this->active_state_heating_value_.has_value() &&
+    /*if (this->supports_heat_ && this->active_state_heating_value_.has_value() &&
         this->active_state_ == this->active_state_heating_value_) {
       target_action = climate::CLIMATE_ACTION_HEATING;
     } else if (this->supports_cool_ && this->active_state_cooling_value_.has_value() &&
                this->active_state_ == this->active_state_cooling_value_) {
       target_action = climate::CLIMATE_ACTION_COOLING;
-    }
+    }*/
   } else if (this->heating_state_pin_ != nullptr || this->cooling_state_pin_ != nullptr) {
     // Use state from input pins
     if (this->heating_state_) {
