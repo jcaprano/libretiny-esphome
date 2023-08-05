@@ -21,6 +21,13 @@ void TuyaClimate::setup() {
       this->publish_state();
     });
   }
+  this->parent_->register_listener(36, [this](const TuyaDatapoint &datapoint) {
+      this->valve_open_=!datapoint.value_enum;
+      ESP_LOGW(TAG, "MCU reported valve state is: %d valve open set to:%d", datapoint.value_enum,this->valve_open_);
+      this->compute_state_();
+      this->publish_state();
+    });
+
   if (this->active_state_id_.has_value()) {
     this->parent_->register_listener(*this->active_state_id_, [this](const TuyaDatapoint &datapoint) {
       ESP_LOGW(TAG, "MCU reported active mode is: %u", datapoint.value_enum);
@@ -231,13 +238,13 @@ void TuyaClimate::compute_state_() {
   }
 
   climate::ClimateAction target_action = climate::CLIMATE_ACTION_IDLE;
-  if (this->active_state_id_.has_value()) {   
-    if(this->mode == climate::CLIMATE_MODE_COOL){
-      target_action = climate::CLIMATE_ACTION_COOLING;
-    }else if (this->mode == climate::CLIMATE_MODE_HEAT){
-      target_action = climate::CLIMATE_ACTION_HEATING;
-    }else if (this->mode == climate::CLIMATE_MODE_FAN_ONLY){
+  if (this->active_state_id_.has_value()) {
+    if (this->mode == climate::CLIMATE_MODE_FAN_ONLY){
       target_action = climate::CLIMATE_ACTION_FAN;
+    }else if(this->mode == climate::CLIMATE_MODE_COOL  && this->valve_open_){
+      target_action = climate::CLIMATE_ACTION_COOLING;
+    }else if (this->mode == climate::CLIMATE_MODE_HEAT  && this->valve_open_){
+      target_action = climate::CLIMATE_ACTION_HEATING;
     }
     // Use state from MCU datapoint
     /*if (this->supports_heat_ && this->active_state_heating_value_.has_value() &&
