@@ -26,7 +26,20 @@ void TuyaClimate::setup() {
       ESP_LOGW(TAG, "MCU reported valve state is: %d valve open set to:%d", datapoint.value_enum,this->valve_open_);
       this->compute_state_();
       this->publish_state();
-    });
+  });
+  
+  this->parent_->register_listener(28, [this](const TuyaDatapoint &datapoint) {
+    ESP_LOGW(TAG, "MCU reported fan state is: %d", datapoint.value_enum);
+    if(datapoint.value_enum == 0){
+      this->fan_mode = climate::CLIMATE_FAN_LOW;
+    }else if(datapoint.value_enum == 1){
+      this->fan_mode = climate::CLIMATE_FAN_MEDIUM;
+    }else if(datapoint.value_enum == 2){
+      this->fan_mode = climate::CLIMATE_FAN_HIGH;
+    }else if(datapoint.value_enum == 3){
+      this->fan_mode = climate::CLIMATE_FAN_AUTO;
+    }
+  });
 
   if (this->active_state_id_.has_value()) {
     this->parent_->register_listener(*this->active_state_id_, [this](const TuyaDatapoint &datapoint) {
@@ -152,6 +165,19 @@ void TuyaClimate::control(const climate::ClimateCall &call) {
       const bool eco = preset == climate::CLIMATE_PRESET_ECO;
       ESP_LOGV(TAG, "Setting eco: %s", ONOFF(eco));
       this->parent_->set_boolean_datapoint_value(*this->eco_id_, eco);
+    }
+  }
+
+  if(call.get_fan_mode().has_value()){
+    climate::ClimateFanMode received_fan_mode = *call.get_fan_mode();
+    if(received_fan_mode == climate::CLIMATE_FAN_LOW){
+      this->parent_->set_enum_datapoint_value(28, 0);
+    }else if(received_fan_mode == climate::CLIMATE_FAN_MEDIUM){
+      this->parent_->set_enum_datapoint_value(28, 1);
+    }else if(received_fan_mode == climate::CLIMATE_FAN_HIGH){
+      this->parent_->set_enum_datapoint_value(28, 2);
+    }else if(received_fan_mode == climate::CLIMATE_FAN_AUTO){
+      this->parent_->set_enum_datapoint_value(28, 3);
     }
   }
 }
