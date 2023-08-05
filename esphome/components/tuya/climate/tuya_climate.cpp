@@ -225,7 +225,7 @@ void TuyaClimate::compute_state_() {
   }
 
   climate::ClimateAction target_action = climate::CLIMATE_ACTION_IDLE;
-  if (this->active_state_id_.has_value()) {
+  if (this->active_state_id_.has_value()) {   
     if(this->mode == climate::CLIMATE_MODE_COOL){
       target_action = climate::CLIMATE_ACTION_COOLING;
     }else if (this->mode == climate::CLIMATE_MODE_HEAT){
