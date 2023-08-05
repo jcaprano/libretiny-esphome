@@ -10,8 +10,13 @@ void TuyaClimate::setup() {
   if (this->switch_id_.has_value()) {
     this->parent_->register_listener(*this->switch_id_, [this](const TuyaDatapoint &datapoint) {
       ESP_LOGW(TAG, "MCU reported switch is: %s", ONOFF(datapoint.value_bool));
-      if (!datapoint.value_bool)
+      if (!datapoint.value_bool){
+        this->is_on_ = false;
         this->mode = climate::CLIMATE_MODE_OFF;
+      }else{
+        this->is_on_ = true;
+        this->mode = this->active_mode_;
+      }
       this->compute_state_();
       this->publish_state();
     });
@@ -19,7 +24,7 @@ void TuyaClimate::setup() {
   if (this->active_state_id_.has_value()) {
     this->parent_->register_listener(*this->active_state_id_, [this](const TuyaDatapoint &datapoint) {
       ESP_LOGW(TAG, "MCU reported active mode is: %u", datapoint.value_enum);
-      if(this->mode != climate::CLIMATE_MODE_OFF){
+      if(this->is_on_){
         if(datapoint.value_enum == 0){
           this->mode = climate::CLIMATE_MODE_COOL;
         }else if(datapoint.value_enum == 1){

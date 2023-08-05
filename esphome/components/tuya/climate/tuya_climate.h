@@ -75,7 +75,8 @@ class TuyaClimate : public climate::Climate, public Component {
   float hysteresis_{1.0f};
   optional<uint8_t> eco_id_{};
   optional<float> eco_temperature_{};
-  uint8_t active_state_;
+  bool is_on_{false};
+  climate::ClimateMode active_mode_{CLIMATE_MODE_OFF};
   bool heating_state_{false};
   bool cooling_state_{false};
   float manual_temperature_;
