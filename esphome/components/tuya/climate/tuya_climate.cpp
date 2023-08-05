@@ -109,12 +109,15 @@ void TuyaClimate::control(const climate::ClimateCall &call) {
     climate::ClimateMode received_mode = *call.get_mode();
     if(received_mode==climate::CLIMATE_MODE_OFF){
       this->parent_->set_boolean_datapoint_value(*this->switch_id_, 0);
-    }else if(received_mode==climate::CLIMATE_MODE_COOL){
-      this->parent_->set_enum_datapoint_value(*this->active_state_id_, 0);
-    }else if(received_mode==climate::CLIMATE_MODE_HEAT){
-      this->parent_->set_enum_datapoint_value(*this->active_state_id_, 1);
-    }else if(received_mode==climate::CLIMATE_MODE_FAN_ONLY){
-      this->parent_->set_enum_datapoint_value(*this->active_state_id_, 2);
+    }else{
+      this->parent_->set_boolean_datapoint_value(*this->switch_id_, 1);
+      if(received_mode==climate::CLIMATE_MODE_COOL){
+        this->parent_->set_enum_datapoint_value(*this->active_state_id_, 0);
+      }else if(received_mode==climate::CLIMATE_MODE_HEAT){
+        this->parent_->set_enum_datapoint_value(*this->active_state_id_, 1);
+      }else if(received_mode==climate::CLIMATE_MODE_FAN_ONLY){
+        this->parent_->set_enum_datapoint_value(*this->active_state_id_, 2);
+      }
     }
   }
 
