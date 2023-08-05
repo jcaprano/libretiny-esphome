@@ -24,14 +24,15 @@ void TuyaClimate::setup() {
   if (this->active_state_id_.has_value()) {
     this->parent_->register_listener(*this->active_state_id_, [this](const TuyaDatapoint &datapoint) {
       ESP_LOGW(TAG, "MCU reported active mode is: %u", datapoint.value_enum);
+      if(datapoint.value_enum == 0){
+        this->active_mode_ = climate::CLIMATE_MODE_COOL;
+      }else if(datapoint.value_enum == 1){
+        this->active_mode_ = climate::CLIMATE_MODE_HEAT;
+      }else if(datapoint.value_enum == 2){
+        this->active_mode_ = climate::CLIMATE_MODE_FAN_ONLY;
+      }
       if(this->is_on_){
-        if(datapoint.value_enum == 0){
-          this->mode = climate::CLIMATE_MODE_COOL;
-        }else if(datapoint.value_enum == 1){
-          this->mode = climate::CLIMATE_MODE_HEAT;
-        }else if(datapoint.value_enum == 2){
-          this->mode = climate::CLIMATE_MODE_FAN_ONLY;
-        }
+        this->mode = this->active_mode_;
       }
       this->compute_state_();
       this->publish_state();
